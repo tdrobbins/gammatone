@@ -54,7 +54,7 @@ def specgram(x, n, sr, w, h):
     for b in range(0, s-n, h):
       u = win * x[b:b+n]
       t = np.fft.fft(u)
-      d[:,c] = t[0:(1+n/2)].T
+      d[:,c] = t[0:(1+n//2)].T
       c = c + 1
 
     return d
@@ -128,7 +128,8 @@ def fft_gtgram(
     fs,
     window_time, hop_time,
     channels,
-    f_min):
+    f_min,
+    f_max):
     """
     Calculate a spectrogram-like time frequency magnitude array based on
     an FFT-based approximation to gammatone subband filters.
@@ -157,12 +158,11 @@ def fft_gtgram(
             channels,
             width,
             f_min,
-            fs/2,
+            f_max,
             nfft/2 + 1
         )
 
     sgram = specgram(wave, nfft, fs, nwin, nhop)
-
+     
     result = gt_weights.dot(np.abs(sgram)) / nfft
-
     return result
